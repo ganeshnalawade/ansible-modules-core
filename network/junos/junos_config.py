@@ -121,6 +121,7 @@ options:
         timeout interval.
     required: false
     default: 0
+    version_added: "2.3"
 requirements:
   - junos-eznc
 notes:
