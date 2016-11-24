@@ -72,6 +72,14 @@ options:
     required: true
     default: false
     choices: ['true', 'false']
+  netconf_timeout:
+    description:
+      - Extend the NETCONF RPC timeout beyond the default value of
+        30 seconds. Set this value to accommodate netconf operations
+        that might take longer than the default timeout interval.
+    required: false
+    default: 0
+    version_added: "2.3"
 requirements:
   - junos-eznc
 notes:
@@ -86,6 +94,7 @@ EXAMPLES = """
 - name: install local package on remote device
   junos_package:
     src: junos-vsrx-12.1X46-D10.2-domestic.tgz
+    netconf_timeout: 60
 
 - name: install local package on remote device without rebooting
   junos_package:
@@ -127,6 +136,7 @@ def main():
         reboot=dict(type='bool', default=True),
         no_copy=dict(default=False, type='bool'),
         force=dict(type='bool', default=False),
+        netconf_timeout=dict(default=0, type='int'),
         transport=dict(default='netconf', choices=['netconf'])
     )
 

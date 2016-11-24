@@ -95,6 +95,14 @@ options:
     required: false
     default: 'xml'
     choices: ['xml', 'text']
+  netconf_timeout:
+    description:
+      - Extend the NETCONF RPC timeout beyond the default value of
+        30 seconds. Set this value to accommodate commands
+        that might take longer than the default timeout interval.
+    required: false
+    default: 0
+    version_added: "2.3"
 requirements:
   - junos-eznc
 notes:
@@ -114,6 +122,7 @@ vars:
 - name: run a set of commands
   junos_command:
     commands: ['show version', 'show ip route']
+    netconf_timeout: 60
     provider: "{{ netconf }}"
 
 - name: run a command with a conditional applied to the second command
@@ -224,6 +233,7 @@ def main():
         retries=dict(default=10, type='int'),
         interval=dict(default=1, type='int'),
 
+        netconf_timeout=dict(default=0, type='int'),
         transport=dict(default='netconf', choices=['netconf'])
     )
 

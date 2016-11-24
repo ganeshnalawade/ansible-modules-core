@@ -81,6 +81,14 @@ options:
     required: false
     default: null
     choices: ['text', 'xml', 'set']
+  netconf_timeout:
+    description:
+      - Extend the NETCONF RPC timeout beyond the default value of
+        30 seconds. Set this value to accommodate changes that might
+        take longer than the default timeout interval.
+    required: false
+    default: 0
+    version_added: "2.3"
 requirements:
   - junos-eznc
 notes:
@@ -91,6 +99,7 @@ notes:
 EXAMPLES = """
 - junos_template:
     src: config.j2
+    netconf_timeout: 60
     comment: update system config
 
 - name: replace config hierarchy
@@ -117,6 +126,7 @@ def main():
         action=dict(default='merge', choices=['merge', 'overwrite', 'replace']),
         config_format=dict(choices=['text', 'set', 'xml']),
         backup=dict(default=False, type='bool'),
+        netconf_timeout=dict(default=0, type='int'),
         transport=dict(default='netconf', choices=['netconf'])
     )
 

@@ -50,6 +50,14 @@ options:
     required: false
     default: text
     choices: ['xml', 'text']
+  netconf_timeout:
+    description:
+      - Extend the NETCONF RPC timeout beyond the default value of
+        30 seconds. Set this value to accommodate get fatcs
+        that might take longer than the default timeout interval.
+    required: false
+    default: 0
+    version_added: "2.3"
 requirements:
   - junos-eznc
 notes:
@@ -67,6 +75,7 @@ EXAMPLES = """
 - name: collect default set of facts and configuration
   junos_facts:
     config: yes
+    netconf_timeout: 60
 
 - name: collect default set of facts and configuration in text format
   junos_facts:
@@ -96,6 +105,7 @@ def main():
     spec = dict(
         config=dict(type='bool'),
         config_format=dict(default='text', choices=['xml', 'text']),
+        netconf_timeout=dict(default=0, type='int'),
         transport=dict(default='netconf', choices=['netconf'])
     )
 

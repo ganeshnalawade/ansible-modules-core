@@ -113,7 +113,7 @@ options:
     default: no
     choices: ['yes', 'no']
     version_added: "2.2"
-  timeout:
+  netconf_timeout:
     description:
       - Extend the NETCONF RPC timeout beyond the default value of
         30 seconds. Set this value to accommodate configuration
@@ -199,7 +199,6 @@ def guess_format(config):
 
     return 'text'
 
-
 def config_to_commands(config):
     set_format = config.startswith('set') or config.startswith('delete')
     candidate = NetworkConfig(indent=4, contents=config, device_os='junos')
@@ -218,7 +217,6 @@ def config_to_commands(config):
         commands = str(candidate).split('\n')
 
     return commands
-
 
 def diff_commands(commands, config):
     config = [unicode(c).replace("'", '') for c in config]
@@ -241,7 +239,6 @@ def diff_commands(commands, config):
                         visited.add(item)
 
     return updates
-
 
 def load_config(module, result):
     candidate = module.params['lines'] or module.params['src']
@@ -273,7 +270,6 @@ def load_config(module, result):
         result['changed'] = True
         result['diff'] = dict(prepared=diff)
 
-
 def rollback_config(module, result):
     rollback = module.params['rollback']
 
@@ -286,23 +282,16 @@ def rollback_config(module, result):
         result['changed'] = True
         result['diff'] = dict(prepared=diff)
 
-
 def zeroize_config(module, result):
     if not module.check_mode:
         module.cli.run_commands('request system zeroize')
     result['changed'] = True
 
-
 def confirm_config(module, result):
     checkonly = module.check_mode
     result['changed'] = module.connection.confirm_commit(checkonly)
 
-
 def run(module, result):
-    timeout = module.params['timeout']
-    if timeout > 0 and module.params['transport'] == 'netconf':
-        module.connection.device.timeout = timeout
-
     if module.params['rollback']:
         return rollback_config(module, result)
     elif module.params['zeroize']:
@@ -332,9 +321,7 @@ def main():
         rollback=dict(type='int'),
         zeroize=dict(default=False, type='bool'),
 
-        # timeout
-        timeout=dict(default=0, type='int'),
-
+        netconf_timeout=dict(default=0, type='int'),
         transport=dict(default='netconf', choices=['netconf'])
     )
 
