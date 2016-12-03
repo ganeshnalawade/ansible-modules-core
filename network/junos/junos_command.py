@@ -94,12 +94,13 @@ options:
         output and apply the conditionals path to the result set.
     required: false
     default: 'xml'
-    choices: ['xml', 'text']
+    choices: ['xml', 'text', 'json']
 requirements:
   - junos-eznc
 notes:
   - This module requires the netconf system service be enabled on
-    the remote device being managed
+    the remote device being managed. 'json' format is supported
+    for JUNON version >= 14.2
 """
 
 EXAMPLES = """
@@ -215,7 +216,7 @@ def main():
         commands=dict(type='list'),
         rpcs=dict(type='list'),
 
-        display=dict(default='xml', choices=['text', 'xml'],
+        display=dict(default='xml', choices=['text', 'xml', 'json'],
                      aliases=['format', 'output']),
 
         wait_for=dict(type='list', aliases=['waitfor']),
